@@ -10,7 +10,7 @@ import { databaseSelection,flagReset,recall_page } from "./main.js";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
+const billFirebaseConfig = {
   apiKey: "REMOVED",
   authDomain: "REMOVED",
   projectId: "REMOVED",
@@ -19,9 +19,19 @@ const firebaseConfig = {
   appId: "REMOVED",
   measurementId: "REMOVED"
 };
+const elementFirebaseConfig = {
+  apiKey: "REMOVED",
+  authDomain: "REMOVED",
+  databaseURL: "REMOVED",
+  projectId: "REMOVED",
+  storageBucket: "REMOVED",
+  messagingSenderId: "REMOVED",
+  appId: "REMOVED"
+};
+ 
+var app = NaN;
+var db = NaN;
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 var selected_chamber = "";
 var lastCommand = {};
 var aSocket =  new WebSocket(`ws://127.0.0.1:9669`);
@@ -57,6 +67,14 @@ export async function completeEmitting(data = NaN,bt_raw = ""){
 
 export async function connect(chamber,remoteMode = false){
     selected_chamber = chamber;
+    if(selected_chamber.includes("CS")){
+      app = initializeApp(elementFirebaseConfig);
+      db = getFirestore(app);
+    }else{
+      app = initializeApp(billFirebaseConfig);
+      db = getFirestore(app);
+    }
+    
     await setDoc(doc(db,selected_chamber,"emitted"),{"Connected":"Success"});
     await setDoc(doc(db,selected_chamber,"status"),{"status":"Sent:"});
     const unsub = onSnapshot(
