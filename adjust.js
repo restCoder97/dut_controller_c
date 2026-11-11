@@ -467,8 +467,8 @@ export function readFR1Channels() {
     return;
   }
   /* set up XMLHttpRequest */
-  var url =
-    "http://emcwebcontroller.com/Media/FR1_Band_and_Configurations_v2.xlsx";
+  // Relative, so the workbook comes from the same site as the page, whatever its host or domain.
+  var url = "Media/FR1_Band_and_Configurations_v2.xlsx";
   var oReq = new XMLHttpRequest();
   oReq.open("GET", url, true);
   oReq.responseType = "arraybuffer";

@@ -1,0 +1,6 @@
+# Firebase web config. Not committed: the GitHub Pages workflow writes it from repository
+# secrets, and for local testing you copy firebase-config.example.js. See README.md.
+firebase-config.js
+
+# Personal credential notes
+git.txt

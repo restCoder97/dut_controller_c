@@ -8,27 +8,19 @@ import { databaseSelection,flagReset,recall_page } from "./main.js";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const billFirebaseConfig = {
-  apiKey: "REMOVED",
-  authDomain: "REMOVED",
-  projectId: "REMOVED",
-  storageBucket: "REMOVED",
-  messagingSenderId: "REMOVED",
-  appId: "REMOVED",
-  measurementId: "REMOVED"
-};
-const elementFirebaseConfig = {
-  apiKey: "REMOVED",
-  authDomain: "REMOVED",
-  databaseURL: "REMOVED",
-  projectId: "REMOVED",
-  storageBucket: "REMOVED",
-  messagingSenderId: "REMOVED",
-  appId: "REMOVED"
-};
- 
+// The Firebase web config is not kept in the repository (see README.md). It comes from
+// firebase-config.js: on GitHub Pages the deploy workflow writes that file from repository
+// secrets; for local testing, copy firebase-config.example.js. It is loaded only when
+// connecting, so the rest of the page works without it.
+async function loadFirebaseConfig(){
+  try {
+    const { firebaseConfig } = await import("./firebase-config.js");
+    return firebaseConfig;
+  } catch (err) {
+    throw new Error("Could not load firebase-config.js. Copy firebase-config.example.js to firebase-config.js and fill in the Firebase config (see README.md).", { cause: err });
+  }
+}
+
 var app = NaN;
 var db = NaN;
 
@@ -67,7 +59,7 @@ export async function completeEmitting(data = NaN,bt_raw = ""){
 
 export async function connect(chamber,remoteMode = false){
     selected_chamber = chamber;
-    app = initializeApp(elementFirebaseConfig);
+    app = initializeApp(await loadFirebaseConfig());
     db = getFirestore(app);
     await setDoc(doc(db,selected_chamber,"emitted"),{"Connected":"Success"});
     await setDoc(doc(db,selected_chamber,"status"),{"status":"Sent:"});
