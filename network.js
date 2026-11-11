@@ -11,26 +11,18 @@ import * as lanStore from "./lanstore.js";
 
 const FIREBASE_SDK = "https://www.gstatic.com/firebasejs/9.0.0/";
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const billFirebaseConfig = {
-  apiKey: "REMOVED",
-  authDomain: "REMOVED",
-  projectId: "REMOVED",
-  storageBucket: "REMOVED",
-  messagingSenderId: "REMOVED",
-  appId: "REMOVED",
-  measurementId: "REMOVED"
-};
-const elementFirebaseConfig = {
-  apiKey: "REMOVED",
-  authDomain: "REMOVED",
-  databaseURL: "REMOVED",
-  projectId: "REMOVED",
-  storageBucket: "REMOVED",
-  messagingSenderId: "REMOVED",
-  appId: "REMOVED"
-};
+// The Firebase web config is not kept in the repository. It comes from firebase-config.js:
+// copy firebase-config.example.js and fill it in. The build scripts copy it into the DUT
+// Controller app when it is present, and the GitHub Pages workflow on main writes it from
+// repository secrets. It is loaded only when the Cloud link is used.
+async function loadFirebaseConfig(){
+  try {
+    const { firebaseConfig } = await import("./firebase-config.js");
+    return firebaseConfig;
+  } catch (err) {
+    throw new Error("Could not load firebase-config.js. Copy firebase-config.example.js to firebase-config.js and fill in the Firebase config.", { cause: err });
+  }
+}
 
 const LINK_MODE_KEY = 'LinkMode';
 var linkMode = "cloud";
@@ -92,7 +84,7 @@ async function openStore(){
       import(FIREBASE_SDK + "firebase-firestore.js"),
     ]);
     const apps = firebaseApp.getApps();
-    const app = apps.length ? apps[0] : firebaseApp.initializeApp(elementFirebaseConfig);
+    const app = apps.length ? apps[0] : firebaseApp.initializeApp(await loadFirebaseConfig());
     store = firestore;
     db = firestore.getFirestore(app);
   }

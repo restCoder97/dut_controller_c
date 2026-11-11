@@ -95,6 +95,10 @@ same window to go back to Firebase.
 - Firebase mode is unchanged. The page loads the Firebase SDK only when the Cloud link is
   used, and Bootstrap / SheetJS are now served from `vendor/` (identical files, same SRI
   hashes) so the page also works offline.
+- The Firebase config is not in the repository. To include the Cloud link in the DUT
+  Controller app, copy `firebase-config.example.js` to `firebase-config.js`, fill it in, and
+  build: the build scripts copy it in with the other `.js` files. Without it, the LAN link
+  still works and the Cloud link reports that `firebase-config.js` is missing.
 - The relay keeps documents in memory only; restarting the DUT Controller clears them. The
   test software rewrites what it needs when a run starts.
 - Relay HTTP API and build instructions: [lan-server/README.md](lan-server/README.md).
